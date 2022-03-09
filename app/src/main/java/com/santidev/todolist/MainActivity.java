@@ -7,27 +7,38 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Note mTempNote = new Note();
+    private NoteAdapter mNoteAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        mNoteAdapter = new NoteAdapter(this);
+        ListView listNotes = (ListView) findViewById(R.id.listView);
+        listNotes.setAdapter(mNoteAdapter);
+
+        listNotes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int itemPosition, long id) {
+                //recuperamos la nota de la posicion pulsada por el usuario
+                Note temNote = mNoteAdapter.getItem(itemPosition);
+                //creamos una instancia de show note
                 DialogShowNote dialogShowNote = new DialogShowNote();
-                //indico al dialogo la nota que debe mostrar en pantalla
-                dialogShowNote.sendNoteSelected(mTempNote);
-                dialogShowNote.show(getFragmentManager(), "note_show");
+                dialogShowNote.sendNoteSelected(temNote);
+                dialogShowNote.show(getFragmentManager(),"");
             }
         });
+
     }
 
     @Override
@@ -47,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void createNewNote(Note newNote){
         //Recibira una nueva nota creada por el dialogo DialogNewNote
-        this.mTempNote = newNote;
+        this.mNoteAdapter.addNote(newNote);
     }
 
 }
