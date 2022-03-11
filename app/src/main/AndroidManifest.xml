@@ -10,6 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ToDoList">
         <activity
+            android:name=".SettingsActivity"
+            android:label="@string/settings_title"
+            android:parentActivityName=".MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

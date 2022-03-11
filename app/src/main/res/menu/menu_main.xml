@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:title="Settings" app:showAsAction="never" android:id="@+id/action_settings"/>
     <item android:id="@+id/action_add"
         android:icon="@drawable/outline_add_black_24"
         android:title="@string/action_add"

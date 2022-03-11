@@ -3,6 +3,8 @@ package com.santidev.todolist;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,12 +13,16 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private NoteAdapter mNoteAdapter;
+    private boolean mSound;
+    private int mAnimOptions;
+    private SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +44,20 @@ public class MainActivity extends AppCompatActivity {
                 dialogShowNote.show(getFragmentManager(),"");
             }
         });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPrefs = getSharedPreferences("ToDoList", MODE_PRIVATE);
+        mSound = mPrefs.getBoolean("sound", true);
+        mAnimOptions = mPrefs.getInt("anim option", SettingsActivity.FAST);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mNoteAdapter.saveNotes();
     }
 
     @Override
@@ -53,12 +72,32 @@ public class MainActivity extends AppCompatActivity {
             DialogNewNote dialogNewNote = new DialogNewNote();
             dialogNewNote.show(getFragmentManager(), "note_create");
         }
+
+        if(item.getItemId() == R.id.action_settings){
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        }
         return false;
     }
 
     public void createNewNote(Note newNote){
         //Recibira una nueva nota creada por el dialogo DialogNewNote
         this.mNoteAdapter.addNote(newNote);
+    }
+
+    public void someException() throws IOException{
+
+
+    }
+
+    public void aMethodCallingTheException(){
+        try {
+            someException();
+        }catch (Exception e){
+            e.printStackTrace();//tomar accion en consecuencia despues de que haya ocurido el error.
+        } finally {
+            //ejecutar codigo tanto si el try falla o no
+        }
     }
 
 }

@@ -14,11 +14,28 @@ import java.util.List;
 public class NoteAdapter extends BaseAdapter {
 
     private List<Note> notes = new ArrayList<>();
+    private JSONSerializer mSerializer;
     private Context context;
 
     public NoteAdapter(Context context) {
         this.notes = notes;
         this.context = context;
+        mSerializer = new JSONSerializer("ToDoList.json", context);
+
+        try {
+            notes = mSerializer.load();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void saveNotes(){
+        try{
+            mSerializer.save(notes);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
