@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -21,8 +23,10 @@ public class MainActivity extends AppCompatActivity {
 
     private NoteAdapter mNoteAdapter;
     private boolean mSound;
-    private int mAnimOptions;
+    public static int mAnimOptions;
     private SharedPreferences mPrefs;
+
+    public static Animation animFlash, animFadeIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,17 @@ public class MainActivity extends AppCompatActivity {
         mPrefs = getSharedPreferences("ToDoList", MODE_PRIVATE);
         mSound = mPrefs.getBoolean("sound", true);
         mAnimOptions = mPrefs.getInt("anim option", SettingsActivity.FAST);
+
+        animFlash = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.flash);
+        animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+
+        if(mAnimOptions == SettingsActivity.FAST){
+            animFlash.setDuration(100);
+        }else if(mAnimOptions == SettingsActivity.SLOW){
+            animFlash.setDuration(1000);
+        }
+        mNoteAdapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -99,5 +114,6 @@ public class MainActivity extends AppCompatActivity {
             //ejecutar codigo tanto si el try falla o no
         }
     }
+
 
 }

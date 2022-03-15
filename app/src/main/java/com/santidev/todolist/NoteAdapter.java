@@ -76,6 +76,12 @@ public class NoteAdapter extends BaseAdapter {
 
         Note currentNote = notes.get(itemPosition);
 
+        if (currentNote.isImportant() && MainActivity.mAnimOptions != SettingsActivity.NONE){
+            view.setAnimation(MainActivity.animFlash);
+        }else {
+            view.setAnimation(MainActivity.animFadeIn);
+        }
+
         if(!currentNote.isImportant()){
             imageViewImportant.setVisibility(View.GONE);
         }
