@@ -5,6 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
     public static int mAnimOptions;
     private SharedPreferences mPrefs;
 
+    int idBeep = -1;
+    SoundPool sp;
+
     public static Animation animFlash, animFadeIn;
 
     @Override
@@ -40,6 +49,11 @@ public class MainActivity extends AppCompatActivity {
         listNotes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int itemPosition, long id) {
+
+                if (mSound){
+                    sp.play(idBeep, 1, 1, 0, 0, 1);
+                }
+
                 //recuperamos la nota de la posicion pulsada por el usuario
                 Note temNote = mNoteAdapter.getItem(itemPosition);
                 //creamos una instancia de show note
@@ -48,6 +62,38 @@ public class MainActivity extends AppCompatActivity {
                 dialogShowNote.show(getFragmentManager(),"");
             }
         });
+
+        listNotes.setLongClickable(true);
+        listNotes.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int wichItem, long id) {
+                mNoteAdapter.deleteNote(wichItem);
+                return false;
+            }
+        });
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            AudioAttributes attr = new AudioAttributes.Builder()
+                                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                                    .build();
+
+                sp = new SoundPool.Builder()
+                            .setMaxStreams(5)
+                            .setAudioAttributes(attr)
+                            .build();
+        }else {
+            sp = new SoundPool(5, AudioManager.STREAM_MUSIC,0);
+        }
+
+        try {
+            AssetManager manager = this.getAssets();
+            AssetFileDescriptor descriptor = manager.openFd("jump.ogg");
+            idBeep = sp.load(descriptor, 0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

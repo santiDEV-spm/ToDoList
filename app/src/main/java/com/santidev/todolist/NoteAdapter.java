@@ -102,4 +102,9 @@ public class NoteAdapter extends BaseAdapter {
         this.notes.add(note);
         notifyDataSetChanged();
     }
+
+    public void deleteNote(int n){
+        notes.remove(n);
+        notifyDataSetChanged();
+    }
 }
